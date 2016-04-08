@@ -1,5 +1,6 @@
 package mbpl.androidpassword.DejaVu;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -20,23 +22,22 @@ import mbpl.androidpassword.R;
 
 /**
  * Created by benja135 on 05/03/16.
- *
+ * <p/>
  * - affiche tout les icônes de maniére ordonné dans une grille
  * - possibilité de scroller
  * - un clique sur une icône l'ajoute à la liste des icônes choisies
  * - suppresion des icônes de la liste possible
- * TODO listener sur le bouton valider, création du data.xml, redirection vers DejaVu.Authentification
- * + faire en sorte que ce soit dynamique en fonction des params suivants :
- *      - passSize entre 2 et 8
- *      - nombre d'icônes afficher à l'écran (pour faciliter la localisation, ou augmenter la sécurité) -> phase d'authentification
- *      - permettre de mettre plusieurs fois un même icône ou pas
+ * - passSize entre 1 et 12
  *
+ * - nombre d'icônes afficher à l'écran (pour faciliter la localisation, ou augmenter la sécurité) -> phase d'authentification
+ * - permettre de mettre plusieurs fois un même icône ou pas
  */
 public class Creation extends AppCompatActivity {
 
     private final int nbIcone = 259;
-    private final int passSize = 4;
-    private int nbSelectedIcon = 0;
+    private final int minPassSize = 1;
+    private final int maxPassSize = 12;
+    private int passSize = 0;
     private ArrayList pass = new ArrayList();
 
     private GridLayout gridToolbar;
@@ -77,7 +78,7 @@ public class Creation extends AppCompatActivity {
         screenWidth = size.x;
         //screenHeight = size.y - getStatusBarHeight();
 
-        int nbLigne = (int) Math.ceil((float)nbIcone / (float)nbColonne);
+        int nbLigne = (int) Math.ceil((float) nbIcone / (float) nbColonne);
         gridIcons.setColumnCount(nbColonne);
         gridIcons.setRowCount(nbLigne);
 
@@ -90,7 +91,7 @@ public class Creation extends AppCompatActivity {
 
             // Crée un bitmap de l'icone i
             Bitmap bmp;
-            bmp = BitmapFactory.decodeResource(getResources(), getDrawableN(i+1));
+            bmp = BitmapFactory.decodeResource(getResources(), getDrawableN(i + 1));
             bmp = Bitmap.createScaledBitmap(bmp, 96, 96, true); // les icones prennent moins de place en mémoire après cette méthode
 
             // On ajoute l'icone à l'ImageView
@@ -102,9 +103,9 @@ public class Creation extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     //Toast.makeText(Creation.this, "" + numIcone, Toast.LENGTH_SHORT).show();
-                    if (nbSelectedIcon < passSize) {
-                        pass.add(nbSelectedIcon, numIcone);
-                        nbSelectedIcon++;
+                    if (passSize < maxPassSize) {
+                        pass.add(passSize, numIcone);
+                        passSize++;
                         resetGridToolbar();
                     }
                 }
@@ -123,15 +124,33 @@ public class Creation extends AppCompatActivity {
         }
 
         // Listener sur le bouton "DEL"
-        Button btn = (Button)findViewById(R.id.btnDel);
+        Button btnDel = (Button) findViewById(R.id.btnDel);
 
-        btn.setOnClickListener(new View.OnClickListener() {
+        btnDel.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (nbSelectedIcon > 0) {
-                    nbSelectedIcon--;
+                if (passSize > 0) {
+                    passSize--;
                     resetGridToolbar();
+                }
+            }
+        });
+
+        // Listener sur le bouton "Valider"
+        Button btnValider = (Button) findViewById(R.id.btnValider);
+
+        btnValider.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (passSize > 0) {
+                    Intent authentification = new Intent(Creation.this, Authentification.class);
+                    /*Bundle bundle = new Bundle();
+                    bundle.putInt("numeroDePhase", 1);
+                    authentification.putExtras(bundle);*/
+                    // TODO rentrer le mdp dans la base
+                    startActivity(authentification);
                 }
             }
         });
@@ -141,44 +160,54 @@ public class Creation extends AppCompatActivity {
 
     private void resetGridToolbar() {
 
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.jaugeSecurUti);
+        progressBar= new ProgressBar(this);
+
+        progressBar.setProgress(1);
+        if (progressBar == null)
+            Toast.makeText(Creation.this, "ProgressBar NULL !", Toast.LENGTH_LONG).show();
+
+        //progressBar.setVisibility(View.VISIBLE);
+        //progressBar.setProgress(passSize*10);
+
         Button btnDel = (Button) findViewById(R.id.btnDel);
         Button btnValider = (Button) findViewById(R.id.btnValider);
         gridToolbar.removeAllViews();
 
         gridToolbar.addView(btnDel);
-        if (nbSelectedIcon > 0) {
+        if (passSize > 0) {
             btnDel.setEnabled(true);
         } else {
             btnDel.setEnabled(false);
         }
 
         gridToolbar.addView(btnValider);
-        if (nbSelectedIcon == passSize) {
+        if (passSize >= minPassSize) {
             btnValider.setEnabled(true);
         } else {
             btnValider.setEnabled(false);
         }
 
-        for (int i = 0; i < nbSelectedIcon; i++) {
+        for (int i = 0; i < passSize; i++) {
             ImageView iv;
             iv = new ImageView(this);
 
             Bitmap bmp;
-            bmp = BitmapFactory.decodeResource(getResources(), getDrawableN((int)pass.get(i)));
+            bmp = BitmapFactory.decodeResource(getResources(), getDrawableN((int) pass.get(i)));
             bmp = Bitmap.createScaledBitmap(bmp, 96, 96, true);
 
             iv.setImageBitmap(bmp);
 
             GridLayout.LayoutParams param = new GridLayout.LayoutParams();
 
-            param.height = btnDel.getHeight()-20;
-            param.width = btnDel.getHeight()-20;
+            param.height = btnDel.getHeight() - 20;
+            param.width = btnDel.getHeight() - 20;
 
             param.setMargins(0, 10, 0, 0);
             param.setGravity(Gravity.CENTER);
 
-            param.columnSpec = GridLayout.spec(i+2);
-            param.rowSpec = GridLayout.spec(0);
+            param.columnSpec = GridLayout.spec(1 + (i % 6));
+            param.rowSpec = GridLayout.spec(0 + i/6);
             iv.setLayoutParams(param);
             gridToolbar.addView(iv);
         }
@@ -186,18 +215,19 @@ public class Creation extends AppCompatActivity {
 
     /**
      * Retourne l'icon n de res/drawable.
+     *
      * @param n
      * @return id
      */
     private int getDrawableN(int n) {
-        int id = getResources().getIdentifier("icon96x96_" + n,"drawable", getPackageName());
+        int id = getResources().getIdentifier("icon96x96_" + n, "drawable", getPackageName());
         return id;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        nbSelectedIcon = 0;
+        passSize = 0;
         resetGridToolbar();
     }
 

@@ -11,9 +11,8 @@ import mbpl.androidpassword.R;
 
 /**
  * Created by benja135 on 05/03/16.
- *
+ * <p/>
  * - menu de paramétrage de DéjàVu
- *
  */
 public class Accueil extends Activity {
 
@@ -24,7 +23,7 @@ public class Accueil extends Activity {
         setContentView(R.layout.accueil_deja_vu);
 
         // Listener sur le bouton "Mode par défaut"
-        Button btn = (Button)findViewById(R.id.buttonDefault);
+        Button btn = (Button) findViewById(R.id.buttonDefault);
 
         btn.setOnClickListener(new View.OnClickListener() {
 

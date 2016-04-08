@@ -16,8 +16,8 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:rowCount="1"
-            android:columnCount="6"
+            android:rowCount="3"
+            android:columnCount="7"
             android:id="@+id/gridToolbar">
 
             <Button
@@ -33,8 +33,23 @@
                 android:layout_height="wrap_content"
                 android:text="Valider"
                 android:id="@+id/btnValider"
-                android:layout_row="0"
-                android:layout_column="1" />
+                android:layout_row="1"
+                android:layout_column="0"
+                android:layout_above="@+id/scrollview"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/jaugeSecurUti"
+                android:layout_row="2"
+                android:layout_column="0"
+                android:indeterminate="false"
+                android:max="120"
+                android:progress="0" />
+
         </GridLayout>
 
     </RelativeLayout>
@@ -45,9 +60,9 @@
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/header"
         android:fillViewport="false"
-        android:id="@+id/scrollview">
+        android:id="@+id/scrollview"
+        android:layout_below="@+id/header">
 
         <!-- Content will go here -->
 

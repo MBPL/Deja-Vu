@@ -9,36 +9,55 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
-import mbpl.androidpassword.R;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by benja135 on 05/03/16.
  *
- * - affiche 15*10 icônes choisi aléatoirement
- * TODO tout à faire !
- *
  */
 public class Authentification extends AppCompatActivity {
 
+    private List<Integer> trueMotDePasse = new ArrayList<Integer>();
+    private List<Integer> inputMotDePasse = new ArrayList<Integer>();
     private final int nbIcone = 259;
+    private int nbLigne = 6;
+    private int nbColonne = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.busy_circle); // test écran chargement
+
+        // Mot de passe de 4 en dur pour les tests
+        trueMotDePasse.add(7);
+        trueMotDePasse.add(7);
+        trueMotDePasse.add(7);
+        trueMotDePasse.add(7);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        drawAndSetListeners(trueMotDePasse.get(0));
+    }
 
-        ScrollView scrollView = new ScrollView(this);
+    /**
+     * Affiche les icônes et ajoute un listener sur chacun d'entre eux.
+     * iconToBeDisplaye sera forcément affiché, à une position aléatoire.
+     */
+    private void drawAndSetListeners(int iconToBeDisplayed) {
+
+        boolean[] iconAlreadyDisplayed = new boolean[nbIcone];
+        for (int i = 0; i < nbIcone; i++) {
+            iconAlreadyDisplayed[i] = false;
+        }
+
+        int positionIconToBeDisplayed = randomInto(0, nbLigne*nbColonne-1);
 
         GridLayout gridLayout = new GridLayout(this);
-        scrollView.addView(gridLayout);
 
         // Cache la barre d'action
         android.support.v7.app.ActionBar toolbar = getSupportActionBar();
@@ -51,13 +70,8 @@ public class Authentification extends AppCompatActivity {
         int screenWidth = size.x;
         int screenHeight = size.y - getStatusBarHeight();
 
-        int nbLigne = 15;
-        int nbColonne = 10;
         gridLayout.setColumnCount(nbColonne);
         gridLayout.setRowCount(nbLigne);
-
-        //final View mProgressView = findViewById(R.id.progressBar);
-        //mProgressView.setVisibility(View.VISIBLE);
 
         for (int l = 0; l < nbLigne; l++) {
             for (int c = 0; c < nbColonne; c++) {
@@ -65,20 +79,31 @@ public class Authentification extends AppCompatActivity {
                 ImageView iv;
                 iv = new ImageView(this);
 
-                // Crée un bitmap d'une icone piochée aléatoirement
-                final int n = randomInto(1, 259);
+                // Crée un bitmap d'une icone piochée aléatoirement (ou pas)
+                int numIcon;
+                if ((l*nbColonne + c) == positionIconToBeDisplayed) {
+                    numIcon = trueMotDePasse.get(inputMotDePasse.size());
+                } else {
+                    do {
+                        numIcon = randomInto(1, 259);
+                    } while (iconAlreadyDisplayed[numIcon] || numIcon == iconToBeDisplayed);
+                }
+                iconAlreadyDisplayed[numIcon] = true;
+
                 Bitmap bmp;
-                bmp = BitmapFactory.decodeResource(getResources(), getDrawableN(n));
-                bmp = Bitmap.createScaledBitmap(bmp, 96, 96, true); // les icones prennent moins de place en mémoire après cette méthode
+                bmp = BitmapFactory.decodeResource(getResources(), getDrawableN(numIcon));
+                bmp = Bitmap.createScaledBitmap(bmp, 256, 256, true); // les icones prennent moins de place en mémoire après cette méthode
 
                 // On ajoute l'icone à l'ImageView
                 iv.setImageBitmap(bmp);
 
                 // Ajoute un listener sur l'icon
+                final int finalNumIcon = numIcon;
                 iv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(Authentification.this, "" + n, Toast.LENGTH_SHORT).show();
+                        changePhase(finalNumIcon);
+                        //Toast.makeText(Authentification.this, "! " + finalNumIcon, Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -95,11 +120,30 @@ public class Authentification extends AppCompatActivity {
             }
         }
 
-        setContentView(scrollView);
+        setContentView(gridLayout);
+    }
+
+
+    private void changePhase(int selectedIcon) {
+        inputMotDePasse.add(selectedIcon);
+
+        if (inputMotDePasse.size() == trueMotDePasse.size()) {
+            if (inputMotDePasse.equals(trueMotDePasse)) {
+                Toast.makeText(Authentification.this, "Authentification OK !", Toast.LENGTH_LONG).show();
+                inputMotDePasse.clear(); // TODO modifier
+            } else {
+                Toast.makeText(Authentification.this, "Authentification échoué", Toast.LENGTH_LONG).show();
+                inputMotDePasse.clear();
+            }
+
+        }
+
+        drawAndSetListeners(trueMotDePasse.get(inputMotDePasse.size()));
     }
 
     /**
      * Retourne un nombre aléatoire entre min et max.
+     *
      * @param min
      * @param max
      * @return entier aléatoire
@@ -110,17 +154,19 @@ public class Authentification extends AppCompatActivity {
 
     /**
      * Retourne l'icon n de res/drawable.
+     *
      * @param n
      * @return id
      */
     private int getDrawableN(int n) {
-        int id = getResources().getIdentifier("icon96x96_" + n,"drawable", getPackageName());
+        int id = getResources().getIdentifier("icon256x256_" + n, "drawable", getPackageName());
         return id;
     }
 
 
     /**
      * Retourne la hauteur de la barre de notification
+     *
      * @return taille de la barre de notification
      */
     public int getStatusBarHeight() {
