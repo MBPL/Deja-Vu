@@ -35,36 +35,71 @@ import mbpl.androidpassword.R;
 public class Creation extends AppCompatActivity {
 
     private final int nbIcone = 259;
+    private final int tailleIcone = 96;
+    private final int nbColonne = 10;
     private final int minPassSize = 1;
     private final int maxPassSize = 12;
-    private int passSize = 0;
-    private ArrayList pass = new ArrayList();
 
     private GridLayout gridToolbar;
-    private GridLayout gridIcons;
-    private ScrollView scrollView;
+    private ArrayList pass = new ArrayList();
 
-    private int screenWidth = 0;
-    private final int nbColonne = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.busy_circle); // test écran chargement
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        setContentView(R.layout.creation_deja_vu);
 
+        setContentView(R.layout.creation_deja_vu);
         gridToolbar = (GridLayout) findViewById(R.id.gridToolbar);
-        scrollView = (ScrollView) findViewById(R.id.scrollview);
-        gridIcons = new GridLayout(this);
+
+        drawGridToolbar();
+        filledScrollAndSetListeners();
+
+        // Listener sur le bouton "DEL"
+        Button btnDel = (Button) findViewById(R.id.btnDel);
+
+        btnDel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (pass.size() > 0) {
+                    pass.remove(pass.size()-1);
+                    drawGridToolbar();
+                }
+            }
+        });
+
+        // Listener sur le bouton "Valider"
+        Button btnValider = (Button) findViewById(R.id.btnValider);
+
+        btnValider.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (pass.size() > 0) {
+                    // TODO rentrer le mdp dans la base
+                    Intent authentification = new Intent(Creation.this, Authentification.class);
+                    startActivity(authentification);
+                }
+            }
+        });
+
+        Toast.makeText(Creation.this, "Création. Essaye de scroller ! :)", Toast.LENGTH_LONG).show();
+    }
+
+
+    /**
+     * Rempli le scrollLayout d'icônes et place les listeners sur les icônes.
+     */
+    private void filledScrollAndSetListeners() {
+        ScrollView scrollView = (ScrollView) findViewById(R.id.scrollview);
+        GridLayout gridIcons = new GridLayout(this);
 
         scrollView.addView(gridIcons);
-
-        resetGridToolbar(); // pour désactiver les boutons
 
         // Cache la barre d'action si elle existe
         ActionBar toolbar = getSupportActionBar();
@@ -75,7 +110,7 @@ public class Creation extends AppCompatActivity {
         // On récup la largeur de l'écran
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
-        screenWidth = size.x;
+        int screenWidth = size.x;
         //screenHeight = size.y - getStatusBarHeight();
 
         int nbLigne = (int) Math.ceil((float) nbIcone / (float) nbColonne);
@@ -102,11 +137,9 @@ public class Creation extends AppCompatActivity {
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Toast.makeText(Creation.this, "" + numIcone, Toast.LENGTH_SHORT).show();
-                    if (passSize < maxPassSize) {
-                        pass.add(passSize, numIcone);
-                        passSize++;
-                        resetGridToolbar();
+                    if (pass.size() < maxPassSize) {
+                        pass.add(numIcone);
+                        drawGridToolbar();
                     }
                 }
             });
@@ -122,73 +155,42 @@ public class Creation extends AppCompatActivity {
             iv.setLayoutParams(param);
             gridIcons.addView(iv);
         }
-
-        // Listener sur le bouton "DEL"
-        Button btnDel = (Button) findViewById(R.id.btnDel);
-
-        btnDel.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (passSize > 0) {
-                    passSize--;
-                    resetGridToolbar();
-                }
-            }
-        });
-
-        // Listener sur le bouton "Valider"
-        Button btnValider = (Button) findViewById(R.id.btnValider);
-
-        btnValider.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (passSize > 0) {
-                    Intent authentification = new Intent(Creation.this, Authentification.class);
-                    /*Bundle bundle = new Bundle();
-                    bundle.putInt("numeroDePhase", 1);
-                    authentification.putExtras(bundle);*/
-                    // TODO rentrer le mdp dans la base
-                    startActivity(authentification);
-                }
-            }
-        });
-
-        Toast.makeText(Creation.this, "Création. Essaye de scroller ! :)", Toast.LENGTH_LONG).show();
     }
 
-    private void resetGridToolbar() {
+    /**
+     * Affiche la toolbar contenant les deux boutons de controle et
+     * les icônes choisi pour le mot de passe.
+     */
+    private void drawGridToolbar() {
 
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.jaugeSecurUti);
-        progressBar= new ProgressBar(this);
 
-        progressBar.setProgress(1);
-        if (progressBar == null)
+        /*if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setProgress(passSize*10);
+        } else {
             Toast.makeText(Creation.this, "ProgressBar NULL !", Toast.LENGTH_LONG).show();
-
-        //progressBar.setVisibility(View.VISIBLE);
-        //progressBar.setProgress(passSize*10);
+        }*/
 
         Button btnDel = (Button) findViewById(R.id.btnDel);
         Button btnValider = (Button) findViewById(R.id.btnValider);
         gridToolbar.removeAllViews();
 
         gridToolbar.addView(btnDel);
-        if (passSize > 0) {
+        if (pass.size() > 0) {
             btnDel.setEnabled(true);
         } else {
             btnDel.setEnabled(false);
         }
 
         gridToolbar.addView(btnValider);
-        if (passSize >= minPassSize) {
+        if (pass.size() >= minPassSize) {
             btnValider.setEnabled(true);
         } else {
             btnValider.setEnabled(false);
         }
 
-        for (int i = 0; i < passSize; i++) {
+        for (int i = 0; i < pass.size(); i++) {
             ImageView iv;
             iv = new ImageView(this);
 
@@ -207,7 +209,7 @@ public class Creation extends AppCompatActivity {
             param.setGravity(Gravity.CENTER);
 
             param.columnSpec = GridLayout.spec(1 + (i % 6));
-            param.rowSpec = GridLayout.spec(0 + i/6);
+            param.rowSpec = GridLayout.spec(i/6);
             iv.setLayoutParams(param);
             gridToolbar.addView(iv);
         }
@@ -216,19 +218,19 @@ public class Creation extends AppCompatActivity {
     /**
      * Retourne l'icon n de res/drawable.
      *
-     * @param n
-     * @return id
+     * @param n numéro de l'icône à récupérer
+     * @return id identifiant de l'icône
      */
     private int getDrawableN(int n) {
-        int id = getResources().getIdentifier("icon96x96_" + n, "drawable", getPackageName());
-        return id;
+        return getResources().getIdentifier("icon"
+                + tailleIcone + "x" + tailleIcone + "_" + n, "drawable", getPackageName());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        passSize = 0;
-        resetGridToolbar();
+        pass.clear();
+        drawGridToolbar();
     }
 
 }

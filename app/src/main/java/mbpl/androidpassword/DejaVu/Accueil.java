@@ -11,8 +11,7 @@ import mbpl.androidpassword.R;
 
 /**
  * Created by benja135 on 05/03/16.
- * <p/>
- * - menu de paramétrage de DéjàVu
+ * Accueil de la méthode Déjà Vu.
  */
 public class Accueil extends Activity {
 
@@ -34,9 +33,6 @@ public class Accueil extends Activity {
             }
         });
 
-        /* TODO : faire une classe supplémentaire pour les paramétres avancés
-        * ou communiquer dans le bundle pour gérer ça dans Creation */
-
         // Listener sur le bouton "Paramétrage avancé"
         Button btn2 = (Button) findViewById(R.id.buttonAdvanced);
 
@@ -44,8 +40,7 @@ public class Accueil extends Activity {
 
             @Override
             public void onClick(View v) {
-                Toast.makeText(Accueil.this, "Pas encore implémenté !\n(debug) Vous allez être envoyé sur l'activité d'authentification.", Toast.LENGTH_LONG).show();
-                Intent creation = new Intent(Accueil.this, Authentification.class);
+                Intent creation = new Intent(Accueil.this, Configuration.class);
                 startActivity(creation);
             }
         });

@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Connexion réussie !"
+        android:text="Configurations"
         android:id="@+id/textView"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -21,25 +21,23 @@
         android:layout_alignParentStart="true"
         android:textSize="50dp" />
 
-    <Button
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Se déconecter"
-        android:id="@+id/buttonDefault"
-        android:layout_below="@+id/textView"
-        android:layout_alignLeft="@+id/buttonAdvanced"
-        android:layout_alignStart="@+id/buttonAdvanced"
-        android:layout_marginTop="77dp"
-        android:layout_alignRight="@+id/buttonAdvanced"
-        android:layout_alignEnd="@+id/buttonAdvanced" />
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editText"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Quitter l&apos;application"
-        android:id="@+id/buttonAdvanced"
-        android:layout_below="@+id/buttonDefault"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="63dp" />
+        android:text="Nombre d&apos;icônes pendant une phase"
+        android:id="@+id/textView2"
+        android:layout_above="@+id/editText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
