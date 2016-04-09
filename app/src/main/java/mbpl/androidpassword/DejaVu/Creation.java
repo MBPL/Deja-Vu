@@ -1,14 +1,18 @@
 package mbpl.androidpassword.DejaVu;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -18,6 +22,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import mbpl.androidpassword.CustomProgressBar.CustomProgress;
 import mbpl.androidpassword.R;
 
 /**
@@ -28,7 +33,7 @@ import mbpl.androidpassword.R;
  * - un clique sur une icône l'ajoute à la liste des icônes choisies
  * - suppresion des icônes de la liste possible
  * - passSize entre 1 et 12
- *
+ * <p/>
  * - nombre d'icônes afficher à l'écran (pour faciliter la localisation, ou augmenter la sécurité) -> phase d'authentification
  * - permettre de mettre plusieurs fois un même icône ou pas
  */
@@ -67,7 +72,7 @@ public class Creation extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (pass.size() > 0) {
-                    pass.remove(pass.size()-1);
+                    pass.remove(pass.size() - 1);
                     drawGridToolbar();
                 }
             }
@@ -163,14 +168,28 @@ public class Creation extends AppCompatActivity {
      */
     private void drawGridToolbar() {
 
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.jaugeSecurUti);
+        CustomProgress secureProgress = (CustomProgress) findViewById(R.id.customProgressSecure);
+        secureProgress.setMaximumPercentage(((float) pass.size()) / ((float) maxPassSize)); // TODO faire une vraie formule basé sur l'espace de mot de passe
+        secureProgress.setProgressColor(ContextCompat.getColor(this, R.color.blue_500));
+        secureProgress.setProgressBackgroundColor(ContextCompat.getColor(this, R.color.blue_200));
+        secureProgress.setText("Sécurité");
+        secureProgress.setTextSize(14);
+        secureProgress.setTextColor(Color.WHITE);
+        secureProgress.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+        secureProgress.setPadding(20, 0, 0, 0);
+        secureProgress.updateView(true);
 
-        /*if (progressBar != null) {
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.setProgress(passSize*10);
-        } else {
-            Toast.makeText(Creation.this, "ProgressBar NULL !", Toast.LENGTH_LONG).show();
-        }*/
+        CustomProgress usabilityProgress = (CustomProgress) findViewById(R.id.customProgressUsability);
+        usabilityProgress.setMaximumPercentage(1f - ((float) pass.size()) / ((float) maxPassSize));
+        usabilityProgress.setProgressColor(ContextCompat.getColor(this, R.color.green_500));
+        usabilityProgress.setProgressBackgroundColor(ContextCompat.getColor(this, R.color.green_200));
+        usabilityProgress.setText("Utilisabilité");
+        usabilityProgress.setTextSize(14);
+        usabilityProgress.setTextColor(Color.WHITE);
+        usabilityProgress.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+        usabilityProgress.setPadding(20, 0, 0, 0);
+        usabilityProgress.updateView(true);
+
 
         Button btnDel = (Button) findViewById(R.id.btnDel);
         Button btnValider = (Button) findViewById(R.id.btnValider);
@@ -209,7 +228,7 @@ public class Creation extends AppCompatActivity {
             param.setGravity(Gravity.CENTER);
 
             param.columnSpec = GridLayout.spec(1 + (i % 6));
-            param.rowSpec = GridLayout.spec(i/6);
+            param.rowSpec = GridLayout.spec(i / 6);
             iv.setLayoutParams(param);
             gridToolbar.addView(iv);
         }

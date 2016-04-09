@@ -16,8 +16,8 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:rowCount="3"
-            android:columnCount="7"
+            android:rowCount="2"
+            android:columnCount="15"
             android:id="@+id/gridToolbar">
 
             <Button
@@ -39,22 +39,10 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
 
-            <ProgressBar
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/jaugeSecurUti"
-                android:layout_row="2"
-                android:layout_column="0"
-                android:indeterminate="false"
-                android:max="120"
-                android:progress="0" />
 
         </GridLayout>
 
     </RelativeLayout>
-
-    <!-- Footer aligned to bottom -->
 
     <!-- Scrollable Content below header and above footer -->
     <ScrollView
@@ -62,11 +50,29 @@
         android:layout_height="fill_parent"
         android:fillViewport="false"
         android:id="@+id/scrollview"
-        android:layout_below="@+id/header">
+        android:layout_alignRight="@+id/customProgressUsability"
+        android:layout_alignEnd="@+id/customProgressUsability"
+        android:layout_below="@+id/customProgressUsability">
 
         <!-- Content will go here -->
 
     </ScrollView>
+
+    <mbpl.androidpassword.CustomProgressBar.CustomProgress
+        android:id="@+id/customProgressSecure"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/custom_progress_height"
+        android:layout_below="@+id/header"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <mbpl.androidpassword.CustomProgressBar.CustomProgress
+        android:id="@+id/customProgressUsability"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/custom_progress_height"
+        android:layout_below="@+id/customProgressSecure"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
 
