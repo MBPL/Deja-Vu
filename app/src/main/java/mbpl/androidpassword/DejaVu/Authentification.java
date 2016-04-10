@@ -45,6 +45,7 @@ public class Authentification extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         drawAndSetListeners(trueMotDePasse.get(0));
+        Toast.makeText(Authentification.this, "Phase d'authentification", Toast.LENGTH_LONG).show();
         time = System.currentTimeMillis();
     }
 
@@ -86,9 +87,9 @@ public class Authentification extends AppCompatActivity {
                 } else {
                     do {
                         numIcon = randomInto(1, 259);
-                    } while (iconAlreadyDisplayed[numIcon-1] || numIcon == iconToBeDisplayed);
+                    } while (iconAlreadyDisplayed[numIcon - 1] || numIcon == iconToBeDisplayed);
                 }
-                iconAlreadyDisplayed[numIcon-1] = true;
+                iconAlreadyDisplayed[numIcon - 1] = true;
 
                 Bitmap bmp;
                 bmp = BitmapFactory.decodeResource(getResources(), getDrawableN(numIcon));
@@ -149,11 +150,11 @@ public class Authentification extends AppCompatActivity {
             } else {
                 Toast.makeText(Authentification.this, "Authentification échoué", Toast.LENGTH_LONG).show();
                 inputMotDePasse.clear();
+                drawAndSetListeners(trueMotDePasse.get(inputMotDePasse.size()));
             }
-
+        } else {
+            drawAndSetListeners(trueMotDePasse.get(inputMotDePasse.size()));
         }
-
-        drawAndSetListeners(trueMotDePasse.get(inputMotDePasse.size()));
     }
 
     /**

@@ -28,8 +28,9 @@ import mbpl.androidpassword.R;
  * - affiche tout les icônes de maniére ordonné dans une grille
  * - possibilité de scroller
  * - un clique sur une icône l'ajoute à la liste des icônes choisies
- * - suppresion des icônes de la liste possible
+ * - suppression des icônes de la liste possible
  * - passSize entre 1 et 12
+ * - chargement avec un progress circle !
  */
 public class Creation extends AppCompatActivity {
 
@@ -205,10 +206,10 @@ public class Creation extends AppCompatActivity {
         secureProgress.setMaximumPercentage(((float) pass.size()) / ((float) maxPassSize)); // TODO faire une vraie formule basé sur l'espace de mot de passe
         secureProgress.setProgressColor(ContextCompat.getColor(this, R.color.blue_500));
         secureProgress.setProgressBackgroundColor(ContextCompat.getColor(this, R.color.blue_200));
-        secureProgress.setText("Sécurité");
+        secureProgress.setText(R.string.security);
         secureProgress.setTextSize(14);
         secureProgress.setTextColor(Color.WHITE);
-        secureProgress.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+        secureProgress.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
         secureProgress.setPadding(20, 0, 0, 0);
         secureProgress.updateView(true);
 
@@ -216,10 +217,10 @@ public class Creation extends AppCompatActivity {
         usabilityProgress.setMaximumPercentage(1f - ((float) pass.size()) / ((float) maxPassSize));
         usabilityProgress.setProgressColor(ContextCompat.getColor(this, R.color.green_500));
         usabilityProgress.setProgressBackgroundColor(ContextCompat.getColor(this, R.color.green_200));
-        usabilityProgress.setText("Utilisabilité");
+        usabilityProgress.setText(R.string.usability);
         usabilityProgress.setTextSize(14);
         usabilityProgress.setTextColor(Color.WHITE);
-        usabilityProgress.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+        usabilityProgress.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
         usabilityProgress.setPadding(20, 0, 0, 0);
         usabilityProgress.updateView(true);
 
@@ -280,9 +281,9 @@ public class Creation extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onPause() {
-        super.onPause();
+    @Override // TODO voir pour mettre plutôt ça dans onRestart()
+    protected void onRestart() {
+        super.onRestart();
         pass.clear();
         drawGridToolbar();
     }

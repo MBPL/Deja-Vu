@@ -12,32 +12,63 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Configurations"
-        android:id="@+id/textView"
+        android:text="@string/configurations"
+        android:id="@+id/textViewTitre"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:textSize="50dp" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/editText"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:textSize="50sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nombre d&apos;icônes pendant une phase"
-        android:id="@+id/textView2"
-        android:layout_above="@+id/editText"
+        android:text="@string/icon_number"
+        android:id="@+id/textViewIconNumber"
+        android:layout_below="@+id/textViewTitre"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="62dp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/doublons"
+        android:id="@+id/checkBoxDoublons"
+        android:layout_marginTop="34dp"
+        android:checked="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/appliquer"
+        android:id="@+id/buttonAppliquer"
+        android:layout_marginBottom="52dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/buttonReset"
+        android:layout_toEndOf="@+id/buttonReset" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reset"
+        android:id="@+id/buttonReset"
+        android:layout_alignTop="@+id/buttonAppliquer"
+        android:layout_alignRight="@+id/checkBoxDoublons"
+        android:layout_alignEnd="@+id/checkBoxDoublons" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerIconNumber"
+        android:spinnerMode="dropdown"
+        android:layout_above="@+id/checkBoxDoublons"
+        android:layout_toLeftOf="@+id/buttonReset"
+        android:layout_toStartOf="@+id/buttonReset"
+        android:layout_below="@+id/textViewIconNumber" />
 
 </RelativeLayout>
