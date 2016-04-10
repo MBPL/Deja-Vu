@@ -65,12 +65,6 @@ public class Authentification extends AppCompatActivity {
 
         GridLayout gridLayout = new GridLayout(this);
 
-        // Cache la barre d'action
-        android.support.v7.app.ActionBar toolbar = getSupportActionBar();
-        if (toolbar != null) {
-            toolbar.hide();
-        }
-
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
         int screenWidth = size.x;
